@@ -40,6 +40,7 @@ jobs:
         env:
           ANDROIDSDK: $HOME/android-sdk
           ANDROIDNDK: $HOME/android-sdk/ndk-bundle
+          PATH: $HOME/android-sdk/cmdline-tools/latest/bin:$PATH
         run: |
           buildozer -v android debug
 
