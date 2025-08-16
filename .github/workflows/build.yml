@@ -25,7 +25,7 @@ jobs:
       - name: Install Python packages
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
-          python3 -m pip install "cython>=0.29,<3" buildozer==2.1.0 kivy==2.3.1
+          python3 -m pip install "cython>=0.29,<3" buildozer==1.5.0 kivy==2.3.1
 
 
       # Создание папок для Android SDK/NDK
