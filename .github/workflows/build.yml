@@ -55,7 +55,7 @@ jobs:
 
       # Сохранение APK как артефакт
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Narnilla-Dice-APK
           path: bin/*.apk
