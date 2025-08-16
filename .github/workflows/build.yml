@@ -57,7 +57,11 @@ jobs:
       # Сборка APK
       - name: Build APK
         run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_NDK_HOME=$HOME/android-ndk/android-ndk-r25b
+          export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH
           buildozer android debug
+
 
       # Сохранение APK как артефакт
       - name: Upload APK
