@@ -11,32 +11,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout repo
       uses: actions/checkout@v3
 
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y git zip unzip openjdk-11-jdk python3-pip python3-setuptools python3-dev build-essential
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
 
-    - name: Install Buildozer and Cython
+    - name: Install dependencies
       run: |
-        python3 -m pip install --upgrade pip
-        pip install buildozer cython
+        python -m pip install --upgrade pip
+        pip install --upgrade buildozer
 
-    - name: Setup Android SDK
+    - name: Install Git
+      run: sudo apt-get update && sudo apt-get install -y git
+
+    - name: Set up Android SDK
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
+        cd $HOME/android-sdk/cmdline-tools
         wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
-        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
-        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-33" "build-tools;33.0.2" "platform-tools" "ndk;25.2.9519653"
+        unzip cmdline-tools.zip
+        rm cmdline-tools.zip
+        mv cmdline-tools latest
 
-    - name: Export environment variables
-      run: |
+        # Устанавливаем нужные компоненты SDK
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-33" "build-tools;33.0.2"
+
         echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-        echo "export PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/cmdline-tools/latest/bin:$PATH" >> $GITHUB_ENV
+        echo "export PATH=$HOME/android-sdk/platform-tools:$HOME/android-sdk/build-tools/33.0.2:$PATH" >> $GITHUB_ENV
 
     - name: Build APK
       run: |
-        buildozer android debug
+        buildozer -v android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: Narnilla-Dice-APK
+        path: bin/*.apk
